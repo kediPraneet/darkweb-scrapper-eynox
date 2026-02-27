@@ -1,11 +1,12 @@
-
 import base64
+import os
 import streamlit as st
 from datetime import datetime
 from scrape import scrape_multiple
 from search import get_search_results
 from llm_utils import BufferedStreamingHandler, get_model_choices
 from llm import get_llm, refine_query, filter_results, generate_summary
+from report_pdf import build_report_pdf
 
 
 def _render_pipeline_error(stage: str, err: Exception) -> None:
@@ -49,7 +50,7 @@ def cached_scrape_multiple(filtered: list, threads: int):
 
 # Streamlit page configuration
 st.set_page_config(
-    page_title="Robin: AI-Powered Dark Web OSINT Tool",
+    page_title="EY NOX: AI-Powered Dark Web OSINT Tool",
     page_icon="🕵️‍♂️",
     initial_sidebar_state="expanded",
 )
@@ -80,12 +81,17 @@ st.markdown(
 )
 
 
-# Sidebar
-st.sidebar.title("Robin")
-st.sidebar.text("AI-Powered Dark Web OSINT Tool")
-st.sidebar.markdown(
-    """Made by [Apurv Singh Gautam](https://www.linkedin.com/in/apurvsinghgautam/)"""
-)
+# Sidebar – logo left of title
+_logo_path = os.path.join(os.path.dirname(__file__), "root.png")
+logo_col, title_col = st.sidebar.columns([1, 2])
+with logo_col:
+    if os.path.isfile(_logo_path):
+        st.image(_logo_path, width=56)
+    else:
+        st.write("")
+with title_col:
+    st.markdown("**EY NOX**")
+    st.caption("AI-Powered Dark Web OSINT Tool")
 st.sidebar.subheader("Settings")
 model_options = get_model_choices()
 default_model_index = (
@@ -211,8 +217,20 @@ if run_button and query:
 
     with btn_col:
         now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        fname = f"summary_{now}.md"
+        fname_md = f"summary_{now}.md"
+        fname_pdf = f"EY_NOX_report_{now}.pdf"
         b64 = base64.b64encode(st.session_state.streamed_summary.encode()).decode()
-        href = f'<div class="aStyle">📥 <a href="data:file/markdown;base64,{b64}" download="{fname}">Download</a></div>'
+        href = f'<div class="aStyle">📥 <a href="data:file/markdown;base64,{b64}" download="{fname_md}">Download .md</a></div>'
         st.markdown(href, unsafe_allow_html=True)
+        try:
+            pdf_bytes = build_report_pdf(st.session_state.streamed_summary, logo_path=_logo_path)
+            st.download_button(
+                label="Download PDF",
+                data=pdf_bytes,
+                file_name=fname_pdf,
+                mime="application/pdf",
+                key="download_pdf_report",
+            )
+        except Exception:
+            pass  # If reportlab fails (e.g. missing), only MD download is shown
     status_slot.success("✔️ Pipeline completed successfully!")

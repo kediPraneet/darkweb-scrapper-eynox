@@ -81,7 +81,7 @@ def cli(model, query, threads, output):
 
 
 @robin.command()
-@click.option("--ui-port", default=8501, show_default=True, type=int, help="Port for Streamlit UI")
+@click.option("--ui-port", default=8000, show_default=True, type=int, help="Port for Streamlit UI")
 @click.option("--ui-host", default="localhost", show_default=True, type=str, help="Host for Streamlit UI")
 def ui(ui_port, ui_host):
     """Run Robin in Web UI mode."""
