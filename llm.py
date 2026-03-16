@@ -8,6 +8,7 @@ from config import (
     ANTHROPIC_API_KEY,
     GOOGLE_API_KEY,
     OPENROUTER_API_KEY,
+    MINIMAX_API_KEY,
 )
 import logging
 import re
@@ -63,9 +64,11 @@ def _ensure_credentials(model_choice: str, llm_class, model_params: dict) -> Non
     elif "ChatGoogleGenerativeAI" in class_name:
         _require(GOOGLE_API_KEY, "GOOGLE_API_KEY", "Google Gemini")
     elif "ChatOpenAI" in class_name:
-        base_url = (model_params or {}).get("base_url", "").lower()
+        base_url = str((model_params or {}).get("base_url", "") or "").lower()
         if "openrouter" in base_url:
             _require(OPENROUTER_API_KEY, "OPENROUTER_API_KEY", "OpenRouter")
+        elif "minimax" in base_url:
+            _require(MINIMAX_API_KEY, "MINIMAX_API_KEY", "MiniMax")
         else:
             _require(OPENAI_API_KEY, "OPENAI_API_KEY", "OpenAI")
 

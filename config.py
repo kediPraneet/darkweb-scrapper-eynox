@@ -17,4 +17,4 @@ LLAMA_CPP_BASE_URL = os.getenv("LLAMA_CPP_BASE_URL")
 # MINIMAX_API_KEY=sk-...
 # MINIMAX_BASE_URL=https://api.minimaxi.com/v1
 MINIMAX_API_KEY = os.getenv("MINIMAX_API_KEY")
-MINIMAX_BASE_URL = os.getenv("MINIMAX_BASE_URL", "https://api.minimaxi.com/v1")
+MINIMAX_BASE_URL = os.getenv("MINIMAX_BASE_URL", "https://api.minimax.io/v1")
