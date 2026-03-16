@@ -113,10 +113,20 @@ if any(name not in {"gpt4o", "gpt-4.1", "claude-3-5-sonnet-latest", "llama3.1", 
 threads = st.sidebar.slider("Scraping Threads", 1, 16, 4, key="thread_slider")
 
 
-# Main UI - logo and input
-_, logo_col, _ = st.columns(3)
-with logo_col:
-    st.image(".github/assets/robin_logo.png", width=200)
+
+st.markdown(
+    """
+    <div style="text-align:center; margin-top:1.5rem; margin-bottom:1.5rem;">
+        <div style="font-size:3rem; font-weight:800; letter-spacing:0.18em;">
+            EY&nbsp;NOX
+        </div>
+        <div style="margin-top:0.4rem; font-size:1.1rem; font-weight:500; color:#CCCCCC;">
+            AI‑Powered Dark Web OSINT Tool
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Display text box and button
 with st.form("search_form", clear_on_submit=True):
