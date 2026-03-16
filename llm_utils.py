@@ -15,6 +15,8 @@ from config import (
     OPENAI_API_KEY,
     ANTHROPIC_API_KEY,
     LLAMA_CPP_BASE_URL,
+    MINIMAX_API_KEY,
+    MINIMAX_BASE_URL,
 )
 
 
@@ -150,6 +152,15 @@ _llm_config_map = {
             'api_key': OPENROUTER_API_KEY  # Use OpenRouter API key
         }
     },
+    # MiniMax – OpenAI-compatible API
+    'minimax-m2.5': {
+        'class': ChatOpenAI,
+        'constructor_params': {
+            'model_name': 'MiniMax-M2.5',
+            'base_url': MINIMAX_BASE_URL,
+            'api_key': MINIMAX_API_KEY
+        }
+    },
     # 'llama3.2': {
     #     'class': ChatOllama,
     #     'constructor_params': {'model': 'llama3.2:latest', 'base_url': OLLAMA_BASE_URL}
@@ -248,6 +259,7 @@ def get_model_choices() -> List[str]:
     anthropic_ok = _is_set(ANTHROPIC_API_KEY)
     google_ok = _is_set(GOOGLE_API_KEY)
     openrouter_ok = _is_set(OPENROUTER_API_KEY) and _is_set(OPENROUTER_BASE_URL)
+    minimax_ok = _is_set(MINIMAX_API_KEY) and _is_set(MINIMAX_BASE_URL)
 
     for k, cfg in _llm_config_map.items():
         cls = cfg.get("class")
@@ -259,7 +271,13 @@ def get_model_choices() -> List[str]:
                 gated_base_models.append(k)
             continue
 
-        # Direct OpenAI models
+        # MiniMax models (ChatOpenAI with base_url set to MiniMax)
+        if cls is ChatOpenAI and (ctor.get("base_url") == MINIMAX_BASE_URL or "minimax" in k):
+            if minimax_ok:
+                gated_base_models.append(k)
+            continue
+
+        # Direct OpenAI models (no custom base_url)
         if cls is ChatOpenAI:
             if openai_ok:
                 gated_base_models.append(k)

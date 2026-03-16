@@ -10,4 +10,11 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL")
 OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-LLAMA_CPP_BASE_URL= os.getenv("LLAMA_CPP_BASE_URL")
+LLAMA_CPP_BASE_URL = os.getenv("LLAMA_CPP_BASE_URL")
+
+# MiniMax (OpenAI-compatible) configuration
+# Example values for .env:
+# MINIMAX_API_KEY=sk-...
+# MINIMAX_BASE_URL=https://api.minimaxi.com/v1
+MINIMAX_API_KEY = os.getenv("MINIMAX_API_KEY")
+MINIMAX_BASE_URL = os.getenv("MINIMAX_BASE_URL", "https://api.minimaxi.com/v1")
